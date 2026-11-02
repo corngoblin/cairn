@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- A cairn: stones piled to mark a path. Gold, because it is a Diablo II tool. -->
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="stone" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f0dda4"/>
+      <stop offset="1" stop-color="#c8a951"/>
+    </linearGradient>
+    <linearGradient id="stoneDark" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d9bf74"/>
+      <stop offset="1" stop-color="#a8873a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ground shadow -->
+  <ellipse cx="64" cy="112" rx="40" ry="6" fill="#000000" opacity="0.18"/>
+
+  <!-- bottom stone -->
+  <path d="M30 104 C30 96 38 90 50 90 L78 90 C90 90 98 96 98 104 C98 108 94 110 88 110 L40 110 C34 110 30 108 30 104 Z"
+        fill="url(#stone)"/>
+  <!-- middle stone -->
+  <path d="M40 76 C40 68 47 63 57 63 L71 63 C81 63 88 68 88 76 C88 80 84 82 79 82 L49 82 C44 82 40 80 40 76 Z"
+        fill="url(#stoneDark)"/>
+  <!-- top stone -->
+  <path d="M50 50 C50 43 56 39 64 39 C72 39 78 43 78 50 C78 54 74 56 69 56 L59 56 C54 56 50 54 50 50 Z"
+        fill="url(#stone)"/>
+
+  <!-- a lighter crack of light between the stones, at the seam the game reads through -->
+  <rect x="44" y="86" width="40" height="2.5" rx="1.2" fill="#3a2f14" opacity="0.35"/>
+  <rect x="52" y="59.5" width="24" height="2" rx="1" fill="#3a2f14" opacity="0.3"/>
+
+  <!-- small marker stone to the side, so it reads as a trail marker and not a snowman -->
+  <path d="M100 108 C100 103 104 100 109 100 C114 100 118 103 118 108 C118 110 115 111 109 111 C103 111 100 110 100 108 Z"
+        fill="#c8a951" opacity="0.55"/>
+</svg>

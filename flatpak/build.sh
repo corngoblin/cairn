@@ -1,0 +1,66 @@
+#!/bin/sh
+# Build (and optionally install) Cairn as a flatpak.
+#
+#   ./flatpak/build.sh                 build into .flatpak-repo
+#   ./flatpak/build.sh --install       build, then install for this user
+#   ./flatpak/build.sh --bundle        build, then export Cairn.flatpak
+#
+# flatpak-builder itself runs inside org.flatpak.Builder, so none of this needs
+# root. The state dir, the build dir and the repo are all under the repository so
+# they land on the same filesystem — flatpak-builder refuses otherwise.
+
+set -eu
+
+cd "$(dirname "$0")/.."
+ROOT=$(pwd)
+APP_ID=io.github.corngoblin.Cairn
+# The manifest lives at the repository root: a `dir` source may not point outside
+# the manifest's own directory, and flatpak-builder refuses "path": "..".
+MANIFEST=$APP_ID.json
+REPO=$ROOT/.flatpak-repo
+BUILD=$ROOT/.flatpak-build
+STATE=$ROOT/.flatpak-builder
+BUNDLE=$ROOT/$APP_ID.flatpak
+
+INSTALL=0
+BUNDLE_OUT=0
+for arg in "$@"; do
+    case "$arg" in
+        --install) INSTALL=1 ;;
+        --bundle) BUNDLE_OUT=1 ;;
+        *) echo "unknown option: $arg" >&2; exit 2 ;;
+    esac
+done
+
+if [ ! -f flatpak/cargo-sources.json ]; then
+    echo "== generating crate sources from Cargo.lock"
+    python3 flatpak/gen-cargo-sources.py > flatpak/cargo-sources.json
+fi
+
+echo "== building $APP_ID"
+# --user inside the builder resolves to the sandbox's own data dir, so the real
+# per-user installation is passed through explicitly.
+flatpak run \
+    --env=FLATPAK_USER_DIR="$HOME/.local/share/flatpak" \
+    --command=flatpak-builder \
+    org.flatpak.Builder \
+    --user --force-clean --sandbox \
+    --state-dir="$STATE" \
+    --repo="$REPO" \
+    "$BUILD" \
+    "$MANIFEST"
+
+if [ "$BUNDLE_OUT" = 1 ]; then
+    echo "== exporting $APP_ID.flatpak"
+    flatpak build-bundle "$REPO" "$BUNDLE" "$APP_ID" --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
+    ls -la "$BUNDLE"
+fi
+
+if [ "$INSTALL" = 1 ]; then
+    echo "== installing for the current user"
+    flatpak install --user --reinstall -y "$REPO" "$APP_ID"
+    echo "== installed:"
+    flatpak run --command=cairn-gui "$APP_ID" --version
+fi
+
+echo "== done"

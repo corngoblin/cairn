@@ -1,0 +1,16 @@
+[package]
+name = "cairn-core"
+description = "Extraction, planning and undo logic for Cairn — the D2R data extractor"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[dependencies]
+casc-sys.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+md-5.workspace = true

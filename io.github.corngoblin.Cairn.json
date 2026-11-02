@@ -1,0 +1,66 @@
+{
+  "app-id": "io.github.corngoblin.Cairn",
+  "runtime": "org.gnome.Platform",
+  "runtime-version": "50",
+  "sdk": "org.gnome.Sdk",
+  "sdk-extensions": [
+    "org.freedesktop.Sdk.Extension.rust-stable"
+  ],
+  "command": "cairn-gui",
+  "finish-args": [
+    "--share=ipc",
+    "--socket=fallback-x11",
+    "--socket=wayland",
+    "--device=dri",
+
+    "--filesystem=host",
+
+    "--talk-name=org.freedesktop.portal.Desktop",
+    "--talk-name=org.freedesktop.Notifications"
+  ],
+  "build-options": {
+    "append-path": "/usr/lib/sdk/rust-stable/bin",
+    "env": {
+      "CARGO_HOME": "/run/build/cairn/cargo",
+      "CARGO_NET_OFFLINE": "true"
+    }
+  },
+  "modules": [
+    {
+      "name": "cairn",
+      "buildsystem": "simple",
+      "build-commands": [
+        "cargo --offline build --release --workspace --locked",
+        "install -Dm755 target/release/cairn-gui /app/bin/cairn-gui",
+        "install -Dm755 target/release/cairn /app/bin/cairn",
+        "install -Dm644 data/io.github.corngoblin.Cairn.desktop /app/share/applications/io.github.corngoblin.Cairn.desktop",
+        "install -Dm644 data/io.github.corngoblin.Cairn.metainfo.xml /app/share/metainfo/io.github.corngoblin.Cairn.metainfo.xml",
+        "install -Dm644 data/icons/hicolor/scalable/apps/io.github.corngoblin.Cairn.svg /app/share/icons/hicolor/scalable/apps/io.github.corngoblin.Cairn.svg"
+      ],
+      "sources": [
+        "flatpak/cargo-sources.json",
+
+        {
+          "type": "file",
+          "path": "Cargo.toml"
+        },
+        {
+          "type": "file",
+          "path": "Cargo.lock"
+        },
+        {
+          "type": "dir",
+          "path": "crates"
+        },
+        {
+          "type": "dir",
+          "path": "vendor"
+        },
+        {
+          "type": "dir",
+          "path": "data"
+        }
+      ]
+    }
+  ]
+}

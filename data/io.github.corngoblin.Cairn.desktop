@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Cairn
+GenericName=D2R Data Extractor
+Comment=Extract Diablo II: Resurrected's data files for faster loading
+Exec=cairn-gui
+Icon=io.github.corngoblin.Cairn
+Terminal=false
+Type=Application
+Categories=Game;Utility;
+Keywords=Diablo;D2R;CASC;extract;Blizzard;
+StartupNotify=true

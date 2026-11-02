@@ -1,0 +1,33 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    # The interesting tests need a C++ compiler and GTK headers for the FFI and the
+    # window, so the container carries them rather than the runner.
+    runs-on: ubuntu-latest
+    container: fedora:44
+    steps:
+      - name: Install build dependencies
+        run: >
+          dnf -y install --setopt=install_weak_deps=False
+          rust cargo gcc gcc-c++ pkgconf-pkg-config gtk4-devel libadwaita-devel
+          git zlib-devel
+
+      - uses: actions/checkout@v4
+
+      - name: Format
+        run: cargo fmt --all --check
+
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+      - name: Test
+        run: cargo test --workspace
+
+      - name: Build
+        run: cargo build --workspace --release

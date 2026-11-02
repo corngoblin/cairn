@@ -1,0 +1,19 @@
+[package]
+name = "cairn-cli"
+description = "Headless commands for Cairn, the D2R data extractor"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "cairn"
+path = "src/main.rs"
+
+[dependencies]
+cairn-core.workspace = true
+casc-sys.workspace = true
+anyhow.workspace = true
+clap.workspace = true

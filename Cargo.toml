@@ -1,0 +1,33 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/casc-sys",
+    "crates/cairn-core",
+    "crates/cairn-cli",
+    "crates/cairn-app",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.82"
+license = "MIT"
+authors = ["Ferah"]
+repository = "https://github.com/corngoblin/cairn"
+
+[workspace.dependencies]
+casc-sys = { path = "crates/casc-sys" }
+cairn-core = { path = "crates/cairn-core" }
+anyhow = "1"
+thiserror = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+clap = { version = "4", features = ["derive"] }
+md-5 = "0.10"
+walkdir = "2"
+libc = "0.2"
+
+[profile.release]
+codegen-units = 1
+lto = "thin"
+strip = true

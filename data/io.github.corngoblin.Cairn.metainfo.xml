@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.corngoblin.Cairn</id>
+
+  <name>Cairn</name>
+  <summary>Extract Diablo II: Resurrected's data files for faster loading</summary>
+
+  <metadata_license>MIT</metadata_license>
+  <project_license>MIT</project_license>
+
+  <description>
+    <p>
+      Diablo II: Resurrected reads its art, sound and data out of compressed archives every
+      time it loads a zone. Unpacking them to plain files means the game stops decompressing
+      and starts reading, which is where the loading time goes.
+    </p>
+    <p>
+      Cairn extracts those archives and keeps a record of every file it writes. That record is
+      what lets a game patch be applied as an update — only the files that changed are
+      rewritten — and what lets Undo remove exactly the files Cairn created, leaving anything
+      you put in the same folder alone.
+    </p>
+    <p>
+      After extracting, add <code>-direct -txt</code> to the game's launch options. Without
+      those flags the game ignores the files entirely.
+    </p>
+    <p>Features:</p>
+    <ul>
+      <li>Reads both Battle.net's CASC storage and Steam's newer static-container format</li>
+      <li>Updates only what a patch changed, using the archives' own content keys</li>
+      <li>Undo removes only what Cairn wrote, and prunes the folders it emptied</li>
+      <li>Several destinations, so a mods folder stays in step with the game folder</li>
+      <li>Optional localised audio and text, in place of the English files</li>
+      <li>Finds installations automatically, including inside a Proton prefix</li>
+    </ul>
+  </description>
+
+  <launchable type="desktop-id">io.github.corngoblin.Cairn.desktop</launchable>
+
+  <url type="homepage">https://github.com/corngoblin/cairn</url>
+  <url type="bugtracker">https://github.com/corngoblin/cairn/issues</url>
+
+  <screenshots>
+    <screenshot type="default">
+      <caption>The installation list</caption>
+      <image>https://raw.githubusercontent.com/corngoblin/cairn/main/docs/screenshot.png</image>
+    </screenshot>
+  </screenshots>
+
+  <developer id="io.github.corngoblin">
+    <name>Ferah</name>
+  </developer>
+
+  <content_rating type="oars-1.1"/>
+
+  <releases>
+    <release version="0.1.0" date="2026-11-02">
+      <description>
+        <p>First release: extract, update, undo, destinations, and localised files.</p>
+      </description>
+    </release>
+  </releases>
+</component>

@@ -1,0 +1,14 @@
+# Rust build output
+/target
+
+# flatpak build artefacts (cargo-sources.json IS tracked: it pins the exact crates)
+/.flatpak-repo
+/.flatpak-build
+/.flatpak-builder
+*.flatpak
+
+# editors
+*.swp
+*~
+.idea
+.vscode
