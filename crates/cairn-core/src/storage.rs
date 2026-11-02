@@ -210,7 +210,9 @@ impl Source for CascSource {
 
 #[derive(Debug, thiserror::Error)]
 pub enum SourceError {
-    #[error("could not open game archives at {path}: {source}")]
+    // The path is context, the io error is the cause: putting the cause's text in
+    // both places makes anyhow's `{:#}` chain print the whole message twice.
+    #[error("could not open the game archives at {path}")]
     Open {
         path: PathBuf,
         #[source]

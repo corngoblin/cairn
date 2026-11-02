@@ -33,6 +33,7 @@
 //! `cargo test`.
 
 pub mod detect;
+pub mod disk;
 pub mod engine;
 pub mod manifest;
 pub mod paths;

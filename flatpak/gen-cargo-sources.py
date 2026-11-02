@@ -60,13 +60,18 @@ def main() -> int:
         # --offline` refuses the source with "failed to read checksums". An empty
         # `files` map means the per-file hashes are not checked; the package hash
         # still pins the crate.
+        #
+        # An `inline` source takes `dest` as a *directory* and needs
+        # `dest-filename` for the name: with the whole path in `dest` alone,
+        # flatpak-builder stops with `Property "dest-filename" must be set`.
         sources.append(
             {
                 "type": "inline",
                 "contents": json.dumps(
                     {"files": {}, "package": package["checksum"]}, separators=(",", ":")
                 ),
-                "dest": f"cargo/vendor/{name}-{version}/.cargo-checksum.json",
+                "dest": f"cargo/vendor/{name}-{version}",
+                "dest-filename": ".cargo-checksum.json",
             }
         )
 
@@ -74,7 +79,8 @@ def main() -> int:
         {
             "type": "inline",
             "contents": CARGO_CONFIG,
-            "dest": "cargo/config.toml",
+            "dest": "cargo",
+            "dest-filename": "config.toml",
         }
     )
 

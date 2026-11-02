@@ -342,6 +342,29 @@ fn the_change_log_records_an_update_but_not_a_fresh_extraction() {
 }
 
 #[test]
+fn a_run_that_cannot_fit_is_refused_before_anything_is_written() {
+    // 45 GB of plan against 40 GB free: refused, and the message names both numbers
+    // so the user knows what to free up.
+    let err = check_space(
+        Path::new("/games/d2r"),
+        45 * 1024 * 1024 * 1024,
+        40 * 1024 * 1024 * 1024,
+    )
+    .expect_err("45 GB cannot fit in 40 GB");
+    let message = err.to_string();
+    assert!(message.contains("not enough free space"), "{message}");
+    // The available figure is the one the user acts on, so it is named exactly; the
+    // required figure carries the slack, so only its unit is asserted.
+    assert!(message.contains("40.0 GB"), "{message}");
+    assert!(message.contains("/games/d2r"), "{message}");
+
+    // Exactly enough is not enough: the slack is there for the manifest and the
+    // temporary rename.
+    assert!(check_space(Path::new("/x"), 1_000, 1_000).is_err());
+    assert!(check_space(Path::new("/x"), 1_000, 1_000 + 512 * 1024 * 1024).is_ok());
+}
+
+#[test]
 fn every_written_path_stays_inside_the_destination() {
     let dir = scratch("contained");
     let dest = dir.join("dest");

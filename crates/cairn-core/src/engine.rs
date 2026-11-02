@@ -34,6 +34,10 @@ const PART_SUFFIX: &str = ".cairn-part";
 /// How often the manifest is flushed mid-run.
 const FLUSH_EVERY_FILES: u64 = 2_000;
 const FLUSH_EVERY_SECONDS: u64 = 30;
+/// Headroom added to a plan's byte total when checking free space: the manifest,
+/// the temporary file being renamed into place, and a filesystem that should not be
+/// driven to its last byte.
+const SLACK_BYTES: u64 = 256 * 1024 * 1024;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
@@ -98,6 +102,18 @@ pub enum RunError {
     Io(#[from] io::Error),
     #[error("{0}")]
     Manifest(#[from] crate::manifest::ManifestError),
+    #[error(
+        "not enough free space: this run needs {} but {} is available on the disk holding {}. \
+         Nothing was written.",
+        crate::util::format_bytes(*needed),
+        crate::util::format_bytes(*available),
+        path.display()
+    )]
+    NotEnoughSpace {
+        path: PathBuf,
+        needed: u64,
+        available: u64,
+    },
     #[error("cancelled")]
     Cancelled,
 }
@@ -108,6 +124,25 @@ pub struct RunOptions {
     /// The language whose localised files should replace the English ones.
     pub international: Option<String>,
     pub plan: PlanOptions,
+}
+
+/// Refuses a run that cannot fit, before anything is written.
+///
+/// Split out from [`run`] so the comparison can be exercised with numbers instead of
+/// by filling a disk: `available` is passed in, and the caller supplies it from
+/// [`crate::disk::free_bytes`].
+pub fn check_space(destination: &Path, needed_bytes: u64, available: u64) -> Result<(), RunError> {
+    // A little slack: the manifest, the temporary name each file is written under,
+    // and a filesystem that should not be driven to its last byte.
+    let needed = needed_bytes.saturating_add(SLACK_BYTES);
+    if available < needed {
+        return Err(RunError::NotEnoughSpace {
+            path: destination.to_path_buf(),
+            needed,
+            available,
+        });
+    }
+    Ok(())
 }
 
 /// Extracts or updates `destination` from `source`.
@@ -139,6 +174,14 @@ pub fn run(
             changes: Vec::new(),
             changes_truncated: false,
         });
+    }
+
+    // Checking the free space before writing anything is the difference between
+    // "this drive cannot hold it" and 20 GB of half-written tree on a full disk.
+    if plan.write_bytes > 0 {
+        if let Some(available) = crate::disk::free_bytes(destination) {
+            check_space(destination, plan.write_bytes, available)?;
+        }
     }
 
     let kind = if plan.is_fresh() && existing.is_none() {

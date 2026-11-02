@@ -114,12 +114,17 @@ lost while 45 GB of extracted files stay behind.
 ## How it is put together
 
 ```
-crates/casc-sys     CascLib FFI, built from vendor/CascLib at compile time
-crates/cairn-core   paths, planning, manifest, engine, detection — all of the logic
-crates/cairn-cli    the `cairn` command
-crates/cairn-app    the GTK4 / libadwaita window
-vendor/CascLib      Ladislav Zezula's CASC reader, vendored (see its LICENSE)
+casc-sys            CascLib FFI, built from vendor/CascLib at compile time
+cairn-core          paths, planning, manifest, engine, detection — all of the logic
+cairn-cli           the `cairn` command
+cairn-app           the GTK4 / libadwaita window
+vendor/CascLib      Ladislav Zezula's CASC reader, vendored (see its LICENSE and PATCHES.md)
+flatpak/            build.sh, and the generated offline crate list
 ```
+
+The flatpak manifest is `io.github.corngoblin.Cairn.json` at the repository root:
+a `dir` source may not point outside the manifest's own directory, so the manifest
+has to sit at the top of the tree it packages.
 
 Two decisions worth knowing about:
 

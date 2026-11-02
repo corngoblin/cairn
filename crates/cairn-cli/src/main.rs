@@ -317,7 +317,15 @@ fn extract(
     });
 
     println!("Reading {}", install.display());
-    let source = CascSource::open(install, lang.as_deref(), &sink, &cancel)?;
+    let source = match CascSource::open(install, lang.as_deref(), &sink, &cancel) {
+        Ok(source) => source,
+        Err(e) => {
+            // The progress line above was written with a bare carriage return, so
+            // end it before the error is printed on top of it.
+            eprintln!();
+            return Err(e.into());
+        }
+    };
     eprintln!();
     println!("{} files in {}", source.entries().len(), source.describe());
 

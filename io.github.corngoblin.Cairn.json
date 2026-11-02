@@ -12,9 +12,7 @@
     "--socket=fallback-x11",
     "--socket=wayland",
     "--device=dri",
-
     "--filesystem=host",
-
     "--talk-name=org.freedesktop.portal.Desktop",
     "--talk-name=org.freedesktop.Notifications"
   ],
@@ -39,7 +37,6 @@
       ],
       "sources": [
         "flatpak/cargo-sources.json",
-
         {
           "type": "file",
           "path": "Cargo.toml"
@@ -50,15 +47,18 @@
         },
         {
           "type": "dir",
-          "path": "crates"
+          "path": "crates",
+          "dest": "crates"
         },
         {
           "type": "dir",
-          "path": "vendor"
+          "path": "vendor",
+          "dest": "vendor"
         },
         {
           "type": "dir",
-          "path": "data"
+          "path": "data",
+          "dest": "data"
         }
       ]
     }
