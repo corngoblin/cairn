@@ -70,16 +70,24 @@ Each installation needs about **40–45 GB** of free space for the extracted fil
 
 ## Installing
 
+Two formats, same program. The flatpak is the tidier one on a GNOME desktop; the
+AppImage needs nothing installed and works anywhere with a reasonably recent glibc.
+
 ```sh
-# from a release bundle
+# flatpak, from a release bundle
 flatpak install --user io.github.corngoblin.Cairn.flatpak
 
-# or build it yourself
-./flatpak/build.sh --install
+# or without a runtime: one file, no install
+chmod +x Cairn-x86_64.AppImage && ./Cairn-x86_64.AppImage
 ```
 
-Building needs `flatpak`, `org.flatpak.Builder`, and the GNOME 50 SDK — no root,
-nothing else on the host.
+Building the flatpak needs `flatpak`, `org.flatpak.Builder` and the GNOME 50 SDK — no
+root, nothing else on the host. Building the AppImage needs GTK 4.14 / libadwaita 1.5
+headers and `squashfs-tools`, and is meant to run on the *oldest* base you intend to
+support, because the binary links the glibc it is built against (it is built on
+Ubuntu 24.04 for that reason). `./appimage/build.sh` also verifies, before packing,
+that a symbolic icon really decodes out of the bundle — that check exists because of
+a bug where every icon silently became a placeholder.
 
 ## The command line
 
@@ -121,6 +129,7 @@ casc-sys            CascLib FFI, built from vendor/CascLib at compile time
 cairn-core          paths, planning, manifest, engine, detection — all of the logic
 cairn-cli           the `cairn` command
 cairn-app           the GTK4 / libadwaita window
+appimage/           build.sh, a pixbuf probe, and the clean-container check
 vendor/CascLib      Ladislav Zezula's CASC reader, vendored (see its LICENSE and PATCHES.md)
 flatpak/            build.sh, and the generated offline crate list
 ```

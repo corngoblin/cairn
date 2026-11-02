@@ -7,6 +7,10 @@
 /.flatpak-builder
 *.flatpak
 
+# AppImage build output and artifact
+/.appimage-build
+*.AppImage
+
 # editors
 *.swp
 *~
