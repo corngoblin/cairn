@@ -25,6 +25,7 @@ REPO=$ROOT/.flatpak-repo
 BUILD=$ROOT/.flatpak-build
 STATE=$ROOT/.flatpak-builder
 BUNDLE=$ROOT/$APP_ID.flatpak
+RUNTIME_REPO=https://flathub.org/repo/flathub.flatpakrepo
 
 INSTALL=0
 BUNDLE_OUT=0
@@ -56,7 +57,9 @@ flatpak run \
 
 if [ "$BUNDLE_OUT" = 1 ]; then
     echo "== exporting $APP_ID.flatpak"
-    flatpak build-bundle "$REPO" "$BUNDLE" "$APP_ID" --arch=x86_64 --branch="$BRANCH" --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
+    # The branch is a positional argument, not an option: `--branch=` is rejected.
+    flatpak build-bundle --arch=x86_64 --runtime-repo="$RUNTIME_REPO" \
+        "$REPO" "$BUNDLE" "$APP_ID" "$BRANCH"
     ls -la "$BUNDLE"
 fi
 
