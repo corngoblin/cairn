@@ -13,6 +13,8 @@ job on Windows. The feature set is deliberately the same — that project has al
 worked out what matters (manifest, incremental update, undo, several destinations,
 localised files), and this is a faithful port of it rather than a re-imagining.
 
+<img width="849" height="631" alt="Screenshot From 2026-11-02 00-12-00" src="https://github.com/user-attachments/assets/141ef7f7-30bf-4871-a270-f020a2ab9b9a" />
+
 ---
 
 ## Why this exists
