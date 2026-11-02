@@ -197,6 +197,27 @@ impl CairnWindow {
 
         this.wire();
         this.refresh();
+
+        // One line at startup, on stderr, so a packaged run can be diagnosed without
+        // pixels: `flatpak run …` collects it, and it says whether the window really
+        // got built and what it thinks it has to show.
+        let (count, active) = {
+            let config = this.config.borrow();
+            (
+                config.installations.len(),
+                config
+                    .installations
+                    .iter()
+                    .map(|i| i.active_destinations().len())
+                    .sum::<usize>(),
+            )
+        };
+        eprintln!(
+            "cairn {} ready: {count} installation(s), {active} active destination(s), config {}",
+            cairn_core::VERSION,
+            this.config_path.display()
+        );
+
         this
     }
 

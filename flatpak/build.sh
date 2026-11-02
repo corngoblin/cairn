@@ -14,6 +14,10 @@ set -eu
 cd "$(dirname "$0")/.."
 ROOT=$(pwd)
 APP_ID=io.github.corngoblin.Cairn
+# The ref is spelled out because a repo can hold several branches (an older
+# `master` build stays around), and `flatpak install <app-id>` then asks which one
+# to use -- which has no answer when the build runs without a terminal.
+BRANCH=$(python3 -c "import json;print(json.load(open('io.github.corngoblin.Cairn.json')).get('branch','master'))" 2>/dev/null || echo master)
 # The manifest lives at the repository root: a `dir` source may not point outside
 # the manifest's own directory, and flatpak-builder refuses "path": "..".
 MANIFEST=$APP_ID.json
@@ -52,13 +56,13 @@ flatpak run \
 
 if [ "$BUNDLE_OUT" = 1 ]; then
     echo "== exporting $APP_ID.flatpak"
-    flatpak build-bundle "$REPO" "$BUNDLE" "$APP_ID" --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
+    flatpak build-bundle "$REPO" "$BUNDLE" "$APP_ID" --arch=x86_64 --branch="$BRANCH" --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
     ls -la "$BUNDLE"
 fi
 
 if [ "$INSTALL" = 1 ]; then
     echo "== installing for the current user"
-    flatpak install --user --reinstall -y "$REPO" "$APP_ID"
+    flatpak install --user --reinstall --noninteractive -y "$REPO" "app/$APP_ID/x86_64/$BRANCH"
     echo "== installed:"
     flatpak run --command=cairn-gui "$APP_ID" --version
 fi
