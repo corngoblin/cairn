@@ -10,7 +10,7 @@
 set -eu
 
 APP_ID=io.github.corngoblin.Cairn
-OUT=${1:-/home/ferah/cairn-sandbox.png}
+OUT=${1:-${HOME}/cairn-sandbox.png}
 UID_NUM=$(id -u)
 
 export XDG_RUNTIME_DIR=/run/user/$UID_NUM
